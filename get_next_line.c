@@ -6,7 +6,7 @@
 /*   By: penzo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/24 15:39:58 by penzo             #+#    #+#             */
-/*   Updated: 2018/11/28 12:24:48 by penzo            ###   ########.fr       */
+/*   Updated: 2018/11/28 18:20:40 by penzo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,40 @@
 #define KGRN  "\x1B[32m"
 
 
+
+char    *ft_strjoinfree(char const *s1, char const *s2)//nothing changed yet
+{
+	char    *res;
+	int     len;
+	int     i;
+	int     j;
+
+	if (!s1 && !s2)
+		return (NULL);
+	if (!s1)
+		return (ft_strdup(s2));
+	if (!s2)
+		return (ft_strdup(s1));
+	len = ft_strlen(s1) + ft_strlen(s2);
+	if (!(res = ft_strnew(len + 1)))
+		return (NULL);
+	ft_strncpy(res, s1, len);
+	i = ft_strlen(s1);
+	j = 0;
+	while (i < len)
+	{
+		res[i] = s2[j];
+		i++;
+		j++;
+	}
+	res[i] = 0;
+	return (res);
+}
+
 //do i need new->length ?
 
 /*	cree new maillon, double chaine
-**	et assign une premiere fois content*/
+ **	et assign une premiere fois content*/
 t_dlst	*ft_dlstnew(int fd, t_dlst *prev, t_dlst *next)
 {
 	t_dlst	*new;
@@ -39,7 +69,7 @@ t_dlst	*ft_dlstnew(int fd, t_dlst *prev, t_dlst *next)
 	while ((i = read(fd, buff, BUFF_SIZE)))
 	{
 		buff[i] = 0;
-		if (!(tmp = ft_strjoin(new->content, buff)))
+		if (!(tmp = ft_strjoinfree(new->content, buff)))
 			return (NULL);
 		if (new->content)
 			free(new->content);
@@ -56,8 +86,8 @@ t_dlst	*ft_dlstnew(int fd, t_dlst *prev, t_dlst *next)
 }
 
 /*	si fd existe, assign line, free content, assign (content - line)
-**	si fd !exist, dlstnew, et le ranger;
-**	return: le maillon (existant ou cree)*/
+ **	si fd !exist, dlstnew, et le ranger;
+ **	return: le maillon (existant ou cree)*/
 t_dlst	*find_fd(t_dlst *curr, int fd)
 {
 	if (!curr)//si pas de list
@@ -96,10 +126,7 @@ char	*get_line(char *content, char **line)
 	char	*res;
 
 	i = 0;
-	//passer les '\n'
-	/*while (content[i] == '\n')
-		content++;*/
-	//if(content[i] == '\n')//if a la place du while precedent
+	//if(content[i] == '\n')
 	//	return (content++);
 	while (content[i] && content[i] != '\n')
 		i++;
@@ -125,6 +152,7 @@ int		get_next_line(const int fd, char **line)
 {
 	static t_dlst	*curr;
 
+	//ft_putendl("111111111111111111");
 	if (read(fd, 0, 0))
 		return (-1);
 	if (BUFF_SIZE < 1 || fd < 0 || !line)
@@ -133,13 +161,25 @@ int		get_next_line(const int fd, char **line)
 	//si non: create new maillon, le remplir et le ranger
 	if (!(curr = find_fd(curr, fd)))
 		return (-1);
+	//ft_putendl("2222222222222222222222222");
 	//if (!(curr->content))
-	if (ft_strcmp(curr->content, "") == 0)
+
+	//Au choix.
+	//if (ft_strcmp(curr->content, "") == 0)
+	//	return (0);
+	if (curr->content[0] == 0)
+	{
+		//ft_putendl("Content est vide!");
+		//free(curr->content);//last change/////////
 		return (0);
+	}
+
+	//ft_putendl("333333333333333333");
 	//assigner line et reassign (content - line)
 	//curr->content = get_line(curr->content, line);
 	if (!(curr->content = get_line(curr->content, line)))
 		return (0);
+	//ft_putendl("4444444444444444444444");
 	//if (curr->content == NULL)
 	//	return (0);
 	return (1);//meh
