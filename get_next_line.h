@@ -6,7 +6,7 @@
 /*   By: penzo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/20 17:59:37 by penzo             #+#    #+#             */
-/*   Updated: 2018/11/28 18:20:36 by penzo            ###   ########.fr       */
+/*   Updated: 2018/11/29 17:02:47 by penzo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include <unistd.h>
 # include "libft/libft.h"
 # include <stdio.h> //a virer ?
-# define BUFF_SIZE 1000
+# define BUFF_SIZE 10000
 int     			get_next_line(const int fd, char **line);
 //t_dlst				*ft_dlstnew(char const *content, size_t content_size);
 typedef struct		s_dlst

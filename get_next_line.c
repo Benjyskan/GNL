@@ -6,7 +6,7 @@
 /*   By: penzo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/24 15:39:58 by penzo             #+#    #+#             */
-/*   Updated: 2018/11/28 18:20:40 by penzo            ###   ########.fr       */
+/*   Updated: 2018/11/29 18:31:17 by penzo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,17 @@ char    *ft_strjoinfree(char const *s1, char const *s2)//nothing changed yet
 	if (!s2)
 		return (ft_strdup(s1));
 	len = ft_strlen(s1) + ft_strlen(s2);
-	if (!(res = ft_strnew(len + 1)))
+	if (!(res = ft_strnew(len)))//
 		return (NULL);
-	ft_strncpy(res, s1, len);
+	ft_strcpy(res, s1);//
+	/*i = 0;
+	while (s1[i])
+	{
+		res[i] = s1[i];
+		i++;
+	}*/
+	//res[i] = 0;
+	//-------
 	i = ft_strlen(s1);
 	j = 0;
 	while (i < len)
@@ -46,13 +54,16 @@ char    *ft_strjoinfree(char const *s1, char const *s2)//nothing changed yet
 		j++;
 	}
 	res[i] = 0;
+	//ft_putstr("len: ");
+	//ft_putnbr(len);
+	//ft_putendl("");
 	return (res);
 }
 
 //do i need new->length ?
 
 /*	cree new maillon, double chaine
- **	et assign une premiere fois content*/
+**	et assign une premiere fois content*/
 t_dlst	*ft_dlstnew(int fd, t_dlst *prev, t_dlst *next)
 {
 	t_dlst	*new;
@@ -60,6 +71,7 @@ t_dlst	*ft_dlstnew(int fd, t_dlst *prev, t_dlst *next)
 	char	*buff;
 	char	*tmp;
 
+	ft_putendl("Begin lstnew");
 	if (!(new = (t_dlst*)malloc(sizeof(t_dlst))))
 		return (NULL);
 	if (!(buff = (char*)malloc(sizeof(char) * (BUFF_SIZE + 1))))
@@ -79,7 +91,14 @@ t_dlst	*ft_dlstnew(int fd, t_dlst *prev, t_dlst *next)
 	}
 	free(buff);
 	new->fd = fd;
+	//ft_putstr("len: ");
+	//ft_putnbr(ft_strlen(new->content));
+	//ft_putendl("");
+
 	new->content_size = ft_strlen(new->content);
+	//ft_putstr("cont_size: ");
+	//ft_putnbr(new->content_size);
+	//ft_putendl("");
 	new->prev = prev;
 	new->next = next;
 	return (new);
@@ -90,6 +109,9 @@ t_dlst	*ft_dlstnew(int fd, t_dlst *prev, t_dlst *next)
  **	return: le maillon (existant ou cree)*/
 t_dlst	*find_fd(t_dlst *curr, int fd)
 {
+	/*ft_putendl("entering find-fd");
+	ft_putendl(curr->content);
+	ft_putnbr(curr->fd);*/
 	if (!curr)//si pas de list
 	{
 		if (!(curr = ft_dlstnew(fd, NULL, NULL)))
@@ -101,8 +123,8 @@ t_dlst	*find_fd(t_dlst *curr, int fd)
 	while (curr->fd > fd && curr->prev)
 		curr = curr->prev;
 	//4 cas: 2 extremite, inter, pile dessus
-	if (curr->fd == fd)//useless ? vu que je return curr a la fin.
-		return (curr);
+//	//if (curr->fd == fd)//useless ? vu que je return curr a la fin.
+//	//	return (curr);
 	//if (!curr->next && curr->fd < fd)//useless
 	if (curr->fd < fd)
 	{
@@ -122,6 +144,7 @@ t_dlst	*find_fd(t_dlst *curr, int fd)
 char	*get_line(char *content, char **line)
 {
 	//change line, et return (content - line);
+	ft_putendl("enter get_line");
 	int		i;
 	char	*res;
 
@@ -150,36 +173,44 @@ char	*get_line(char *content, char **line)
 
 int		get_next_line(const int fd, char **line)
 {
-	static t_dlst	*curr;
+	static t_dlst	*curr = NULL;
 
-	//ft_putendl("111111111111111111");
 	if (read(fd, 0, 0))
 		return (-1);
 	if (BUFF_SIZE < 1 || fd < 0 || !line)
 		return (-1);
 	//checker si le fd est deja ouvert
 	//si non: create new maillon, le remplir et le ranger
+	
 	if (!(curr = find_fd(curr, fd)))
+	{
 		return (-1);
-	//ft_putendl("2222222222222222222222222");
+	}
 	//if (!(curr->content))
-
 	//Au choix.
 	//if (ft_strcmp(curr->content, "") == 0)
 	//	return (0);
+	
+	ft_putendl("prout");
+	ft_putnbr(curr->fd);
 	if (curr->content[0] == 0)
 	{
-		//ft_putendl("Content est vide!");
+		ft_putendl("HEY");
+		//printf("curr->content: %s\n", curr->content);
+		if(!(*line = ft_strnew(0)))//ajoute pour pouvoir free
+			return (-1);
+		//ft_putendl("Content[0] == 0 !");
 		//free(curr->content);//last change/////////
 		return (0);
 	}
 
-	//ft_putendl("333333333333333333");
 	//assigner line et reassign (content - line)
 	//curr->content = get_line(curr->content, line);
 	if (!(curr->content = get_line(curr->content, line)))
+	{
 		return (0);
-	//ft_putendl("4444444444444444444444");
+	}
+	ft_putendl("Bonsoir");
 	//if (curr->content == NULL)
 	//	return (0);
 	return (1);//meh
