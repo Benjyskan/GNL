@@ -6,7 +6,7 @@
 /*   By: penzo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/20 17:59:37 by penzo             #+#    #+#             */
-/*   Updated: 2018/11/29 17:02:47 by penzo            ###   ########.fr       */
+/*   Updated: 2018/11/30 10:17:40 by penzo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ typedef struct		s_dlst
 {
 	char			*content;
 	int				fd;
-	size_t			content_size;
 	struct s_dlst	*next;
 	struct s_dlst	*prev;
 }					t_dlst;
