@@ -6,13 +6,12 @@
 /*   By: penzo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/10 13:41:27 by penzo             #+#    #+#             */
-/*   Updated: 2018/11/29 11:32:16 by penzo            ###   ########.fr       */
+/*   Updated: 2018/12/02 11:17:10 by penzo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-/*modified*/
 char	*ft_strncpy(char *dst, const char *src, size_t len)
 {
 	int		i;
