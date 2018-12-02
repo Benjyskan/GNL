@@ -6,7 +6,7 @@
 /*   By: penzo <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/30 14:38:54 by penzo             #+#    #+#             */
-/*   Updated: 2018/11/30 18:47:16 by penzo            ###   ########.fr       */
+/*   Updated: 2018/12/02 10:44:03 by penzo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,7 @@ char	*init_content(const int fd)
 
 	if (!(buff = (char*)malloc(sizeof(char) * (BUFF_SIZE + 1))))
 		return (NULL);
-	//ft_bzero(buff, BUFF_SIZE);//aucun effet :/
 	content = NULL;
-	i = 0;//useless
 	while ((i = read(fd, buff, BUFF_SIZE)))
 	{
 		buff[i] = 0;
@@ -35,13 +33,7 @@ char	*init_content(const int fd)
 		if (content)
 			free(content);
 		content = tmp;
-		ft_bzero(buff, BUFF_SIZE);
 	}
-	ft_putstr("content: ");
-	ft_putchar(content[0]);
-	ft_putchar(content[1]);
-	ft_putchar(content[2]);
-	ft_putchar('\n');
 	free(buff);
 	return (content);
 }
@@ -77,7 +69,8 @@ char	*get_line(char *content, char **line)
 	i = 0;
 	while (content && content[i] && content[i] != '\n')
 		i++;
-	*line = ft_strndup(content, i);
+	if (!(*line = ft_strndup(content, i)))
+		return (NULL);
 	return (&(content[i + 1]));
 }
 
@@ -120,34 +113,19 @@ t_dlst	*find_fd(t_dlst *curr, const int fd)
 
 int		get_next_line(const int fd, char **line)
 {
-	ft_putendl("GNL Begining");
 	static t_dlst	*curr = NULL;
-	char			*tejme;
-	tejme = (char*)malloc(sizeof(char));
+	char			*buff1;
 
 	if (read(fd, 0, 0) || BUFF_SIZE < 1 || fd < 0 || !line)
 		return (-1);
 	curr = find_fd(curr, fd);
-	//check curr->content
-	//if the fd files change, and I finished read the previous one
-	//if ((read(curr->fd, tejme, 1) > 0) && (curr->content[0] == 0))//working
-	if ((read(curr->fd, tejme, 1) > 0) && (curr->content[0] == 0))
-	{
-		ft_putendl("YOYOYOYOYOYOYOYOYOYOYOYOYO");
-		printf("tejme: %s\n", tejme);
-		//curr->content[0] = tejme[0];
-		//curr->content = init_content(curr->fd);//reassign content
-		curr->content = init_content(fd);//reassign content
-		curr->content = ft_strjoin(tejme, curr->content);
-	}
-	//if all lines were read
+	if (!(buff1 = (char*)malloc(sizeof(char))))
+		return (-1);
+	if ((read(curr->fd, buff1, 1) > 0) && (curr->content[0] == 0))
+		curr->content = ft_strjoin(buff1, init_content(fd));
+	free(buff1);
 	if (curr->content[0] == 0)
-	{
-		ft_putendl("I'm in !, content is empty");
-		system("cat ~/42FileChecker/moulitest_42projects/get_next_line_tests/sandbox/one_big_fat_line.txt | cut -c 1-5; cat ~/42FileChecker/moulitest_42projects/get_next_line_tests/sandbox/one_big_fat_line.txt.mine | cut -c 1-5");
 		return (0);
-	}
-	//set line and content to (content - line)
 	curr->content = get_line(curr->content, line);
 	return (1);
 }
